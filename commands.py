@@ -50,7 +50,7 @@ AVERGA PROCESSING TIME
 
 	::
 	
-		cat sourcebox.log.2013-04-* | grep "time=" | grep -v royaltystat | grep -v monitor | grep -v otys | perl -ne '/.*time=(\d+)\.0ms.*/ && print "$1\n"' | awk 'BEGIN{totaltime=0;total=0}{totaltime=$1+totaltime;total=total+1; print totaltime/total; print "TOTAL="total}END{print totaltime/total}'
+		cat wiacek.log.2013-04-* | grep "time=" | grep -v royaltystat | grep -v monitor | grep -v otys | perl -ne '/.*time=(\d+)\.0ms.*/ && print "$1\n"' | awk 'BEGIN{totaltime=0;total=0}{totaltime=$1+totaltime;total=total+1; print totaltime/total; print "TOTAL="total}END{print totaltime/total}'
 
 
 SED
@@ -98,7 +98,7 @@ less Italy1.txt | perl -ne 'tr/[0-9.]/*/s and print' | awk -F"*" '{print $2}' | 
 less codetable.monster.nl-en-fr.languages.xml |perl -e '$counter=0; while(<>) { if(/<CodeID>(.*)<\/CodeIr++;print "     <CodeID>$counter</CodeID>\n"} else {print}}'
 cat MLDemoXmltable/Phraserules/xmltable.phrs |perl -MEncode=from_to -pe 'from_to($_,"utf8","latin1");'
 perl -MFile::Find=find -MFile::Spec::Functions -lwe 'find { wanted => sub { print canonpath $_ if /\.pm\z/ }, no_chdir => 1 }, @INC' (show librairs)
-perl -pi -e 's/TKHOME.*/TKHOME = \/projects\/Textractor3\/Textractor3gamma\/Textractor3.0/' /etc/textkernel.cfg 
+perl -pi -e 's/TKHOME.*/TKHOME = \/projects\/Wiacek\/Wiacek\/Wiacek.0/' /etc/wiacek.cfg 
 perl -MEncode=from_to -pi -e 'from_to($_,"utf8","latin1");' lugera-latin1.phrs 
 
 
@@ -107,13 +107,13 @@ perl -wc script.pl
 perl -Mstrict -cw [PHRASERULEFILE]
 
 - find all cfg files that contains verbosity
-grep config /etc/textkernel.cfg | awk '{print $3}' | perl -ne 'chomp; system "grep -H verbosity $_ ";'
+grep config /etc/wiacek.cfg | awk '{print $3}' | perl -ne 'chomp; system "grep -H verbosity $_ ";'
 
 - perl comvert from utf8 to latin1
 cat MLDemoXmltable/Phraserules/xmltable.phrs |perl -MEncode=from_to -pe 'from_to($_,"utf8","latin1");'
 
 - Applies changes directly to the file
-perl -pi -e 's/TKHOME.*/TKHOME = \/projects\/Textractor3\/Textractor3gamma\/Textractor3.0/' /etc/textkernel.cfg 
+perl -pi -e 's/TKHOME.*/TKHOME = \/projects\/Wiacek\/Wiacek\/wiacek.0/' /etc/wiacek.cfg 
 perl -MEncode=from_to -pi -e 'from_to($_,"utf8","latin1");' lugera-latin1.phrs 
 
 - Transform XML into entities
@@ -323,7 +323,7 @@ NC
 - Netcat or nc is a networking utility for debugging and investigating the network.
 - This utility can be used for creating TCP/UDP connections and investigating them. The biggest use of this utility is in the scripts where we need to deal with TCP/UDP sockets.
 
-nc -vzu monitor.textkernel.local 514
+nc -vzu monitor.wiacek.local 514
 -v verbose
 -z scan for listening deamons, without sending data
 -u use UDP
@@ -379,18 +379,6 @@ nmap -Pn -p80 -oX logs/pb-port80scan.xml -oG logs/pb-port80scan.gnmap 216.163.12
 
 CURL
 ----
-- sourcebox, GET/post files, read/write cookie, verbose, follow redirects, specify headers
-curl -c /tmp/cookiejar 'http://home.textkernel.nl/sourcebox-new/loginUser.do?account=multidemo&username=demo&password=demo'
-curl -F uploaded_file=@/home/wiacek/TK-Multilingual/TestCVs/NL/petra.doc 'http://home.textkernel.nl/sourcebox-new/processDocument.do?jsessionid=443DCD121695C2E9BB1B02A071C3D128'
-curl -c /tmp/cookiejar 'http://home.textkernel.nl/sourcebox-new/storeDocument.do?jsessionid=443DCD121695C2E9BB1B02A071C3D128'
-curl --data user=demo --data password=demo --data account=multidemo --verbose --header "Expect: 100-continue" http://home.textkernel.nl/sourcebox/loginUser.do
-curl http://textkernel.cso20.net/v1/CVAPI.cfc?wsdl --data "@/tmp/rijk.xml" --header "Content-Type:text/xml;charset=UTF-8;" --header "SOAPAction:\"\"" --dump-header /tmp/header.txt --location
-curl http://home.textkernel.nl/sourcebox/loginUser.do --data "username=demo" --data "account=dutchdemo" --data "password=demo" --cookie-jar /tmp/cookie.txt
-curl http://home.textkernel.nl/sourcebox/processDocument.do --form uploaded_file=@ /home/wiacek/ --cookie /tmp/cookie.txt
-curl -F "web=@index.html;type=text/html" url.com
-curl http://home.textkernel.nl/sourcebox/getProfile.do --cookie /tmp/cookie.txt
-curl http://home.textkernel.nl/sourcebox/logout.jsp --cookie /tmp/cookie.txt
-
 - http authentification
 curl -u yacitus:xxxx http://api.tr.im/api/trim_url.json?url=http://www.google.co.uk
 
@@ -427,7 +415,7 @@ $ ps -f  -p 25009,7258,2426
 ps -e -o pid,args --forest (forest)
 ps -C java -L -o pid,tid,pcpu,state,nlwp,args (all threads for a particular process )
 -C This selects the processes whose executable name is given in cmdlist.
-ps -fe --cols 1000 | grep Textractor | grep dyna
+ps -fe --cols 1000 | grep wiacek | grep dyna
 
 - for memory
 ps -e -orss=,args= | sort -b -k1,1n | pr -TW$COLUMNS ( List processes by mem usage )
@@ -544,10 +532,10 @@ NSUPDATE
 - add/delete A, add/delete CNAME
 
 nsupdate -v -k /etc/rndc.key
-> zone textkernel.local.
-> update delete tk55.textkernel.local. 86400 CNAME tk55.textkernel.local.
+> zone wiacek.local.
+> update delete tk55.wiacek.local. 86400 CNAME tk55.wiacek.local.
 > show
-> update add carerix.textkernel.local. 86400 CNAME tk55.textkernel.local.
+> update add carerix.wiacek.local. 86400 CNAME tk55.wiacek.local.
 > send
 > quit
 > update add newhost.example.com 86400 A 172.16.1.1
@@ -595,7 +583,7 @@ HOST_RESOLVING
 - DNS Configuration (nameservers)
 /etc/resolv.conf (dns configuration)
 ; generated by /sbin/dhclient-script
-search textkernel.local.
+search wiacek.local.
 nameserver 192.168.0.31
 nameserver 192.168.0.129
 nameserver 192.168.0.227
@@ -724,11 +712,11 @@ tar rvf archive_name.tar newfile (add to archive)
 tar -cf - /directory/to/archive/ | wc -c (estimate size before creating)
 	
 - Tar whole directory
-tar czfv /Textkernel/paqckage/Textractor_build3.05.14_linux.tgz Textractor-3.05.14/
+tar czfv /Wiacek/paqckage/Wiacek.05.14_linux.tgz Wiacek-3.05.14/
 tar -cf - list_of_file_names | gzip > output_file.tar.gz	
 
 - tar files and split in 100MiB parts
-tar zcf - TextractorCollection | split -d -b 100MiB - TextractorCollectionArchives/TextractorCollection_split.tar.bz2__
+tar zcf - Wiacek | split -d -b 100MiB - Wiacek/Wiacek.tar.bz2__
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1.5 XML (xmlint, prett print, xpath)
@@ -750,7 +738,7 @@ PRETTYPRINT XML
 ---------------
 - tidy, xmllint,xml_pp (with backups named, preserve spaces in pre and code tags)
 
-tidy -i -xml -asxml ~/Download/Textkernel_Medewerkers.xml | less
+tidy -i -xml -asxml ~/Download/Wiacek.xml | less
 xmllint --format myXmlFile.xml > myPrettyPrintedFile.xml 
 xml_pp foo.xml > foo_pp.xml           # pretty print foo.xml
 xml_pp < foo.xml > foo_pp.xml         # pretty print from standard input
@@ -1006,7 +994,7 @@ svn remove -m "I deleted this file for a reason" http://svn.greenstone.org/.....
 svn status
 svn mkdir -m "Making a new dir." http://svn.red-bean.com/repos/newdir
 svn delete http://www.yourrepository.com/svn/folder --message "Deleting"
-svn copy https://secure.textkernel.local/repos/Textkernel/Normalizers/trunk/Vitae@75705 https://secure.textkernel.local/repos/Textkernel/Normalizers/trunk/
+svn copy https://secure.wiacek.local/repos/Test@75705 https://secure.wiacek.local/repos/trunk/
 svn export -r {2009-02-17} (from date)
 svn export -r{2009-12-20} svn://project/path/trunk export_directory
 
@@ -1036,9 +1024,6 @@ find -name "*.cfg" | perl -pe 's/(\S+)/$1.bak $1/' | xargs -n 2 cp
 find . -name '*~' -print0 | xargs -0 -l -i -t  rm {}
 echo a b c d e f | xargs -n 2 echo | xargs -l2 echo
 
-- copy all subdirectories of DIR-A to DIR-B if they do not exist in DIR-B
-diff -q TK-Multilingual/CV-NL/ TK-Multilingual-test/CV-NL/ | grep Only | grep Normalization | grep TK-Multilingual/CV-NL/ | awk '{sub(/:/, "", $3); print $3$4}' | xargs -I {} cp -r {} /tmp/tempdires/
-
 - Cleans current directory from all subversion directories recursively.
 find . -type d -name ".svn" -print | xargs rm -fr
 
@@ -1058,7 +1043,7 @@ find <directory> -print0 |xargs -0 -n 1 setfattr -h -x security.selinux
 EXEC
 ----
 
-- talk to TCP Textractor on port via file
+- talk to TCP Wiacek on port via file
 exec 3<>/dev/tcp/localhost/8888
 echo -en "LIST-SERVICES\n" >&3
 cat <&3
@@ -1109,7 +1094,7 @@ ssh-keygen -t rsa
 copy Copy $HOME/.ssh/id_dsa.pub to the server.
 cat id_dsa.pub >> $HOME/.ssh/authorized_keys
 chmod 0600 $HOME/.ssh/authorized_keys
-ssh -i /home/wiacek/.ssh/id_dsa wiacek@home.textkernel.local 'find /projects/configuration/search/conf -name "*.env.conf"'
+ssh -i /home/wiacek/.ssh/id_dsa wiacek@home.wiacek.local 'find /projects/configuration/search/conf -name "*.env.conf"'
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1.9 Profile (alias, path etc)
@@ -1465,7 +1450,7 @@ yum repolist
 rpm -qf $(type -p certutil)
 
 - RPM List files owned by an RPM
-rpm -qlp /home/trahair/TK-VCS/SVN/rpms/sourcebox/rpm-build/sourcebox-3.3.11-1.el6.noarch.rpm
+rpm -qlp /TK-VCS/SVN/rpms/Wiacek/rpm-build/Wiacek-3.3.11-1.el6.noarch.rpm
 
 - delete repo
 rm epel.repo epel-testing.repo
@@ -1490,13 +1475,13 @@ net user postgres /delete -- Delete user
 runas /user:postgres cmd.exe 
 
 - add user
-net user postgres P0$tgr3s /fullname:"postgres" /add
+net user postgres secret /fullname:"postgres" /add
 
 -- assign to group
 net localgroup "Power User" postgres /add
 
 -- change permission
-cacls e:\Textkernel\deployment\PostgreSQL /e /p postgres:f
+cacls e:\Wiacek\deployment\PostgreSQL /e /p postgres:f
 
 -- postgres installation problem
 http://forums.holdemmanager.com/general-support/150771-solved-postgresql-database-cluster-initialisation-failed.html
@@ -1584,19 +1569,19 @@ bin/elasticsearch -f -Des.max-open-files=true
 SSL
 ---
 - generate the self-signing key 
-openssl genrsa -des3 -out staging.textkernel.nl.key 1024
+openssl genrsa -des3 -out staging.wiacek.nl.key 1024
 (remember the password you give in here)
 
 - generate the certificate signing request (csr):
 certificate signing request is a message sent from an applicant to a certificate authority in order to apply for a digital identity certificate.
-openssl req -new -key staging.textkernel.nl.key -out staging.textkernel.nl.csr
+openssl req -new -key staging.wiacek.nl.key -out staging.wiacek.nl.csr
 
 - remove the passwrod from the key (to be able to let httpd startup without being prompted for the password)
-cp staging.textkernel.nl.key staging.textkernel.nl.key.org
-openssl rsa -in staging.textkernel.nl.key.org -out staging.textkernel.nl.key
+cp staging.wiacek.nl.key staging.wiacek.nl.key.org
+openssl rsa -in staging.wiacek.nl.key.org -out staging.wiacek.nl.key
 
 - generate the self-signed cert :
-openssl x509 -req -days 3650 -in staging.textkernel.nl.csr -signkey staging.textkernel.nl.key -out staging.textkernel.nl.crt
+openssl x509 -req -days 3650 -in staging.wiacek.nl.csr -signkey staging.wiacek.nl.key -out staging.wiacek.nl.crt
 
 
 
@@ -1935,7 +1920,7 @@ for m in p.finditer('a1b2c3d4'):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - make http requests, post data
 - check result, parse/modify verbose request/response
-- communicate with sourcebox
+- communicate with wiacek
 - https, ssl, http-authentification
 - parse html, read codes, headers
 
@@ -1957,13 +1942,13 @@ def check_sb(host, context, account):
     try:
         conn = opener.open(request)
     except urllib2.HTTPError, err:
-        print 'Sourcebox (%s) - ERROR (%s)' % (account,err)
+        print 'Wiacek (%s) - ERROR (%s)' % (account,err)
         sys.exit(2)        
     except Exception, err:
-        print 'Sourcebox (%s) - ERROR (%s)' % (account, err)
+        print 'Wiacek (%s) - ERROR (%s)' % (account, err)
         sys.exit(2) 
     except:
-        print 'Sourcebox (%s) - ERROR (Unexpected error: %s)' % (account, sys.exc_info()[0])
+        print 'Wiacek (%s) - ERROR (Unexpected error: %s)' % (account, sys.exc_info()[0])
         sys.exit(2)                 
     
     encoding = conn.headers.getparam('charset')
@@ -2073,16 +2058,16 @@ monitored= ['CV-ES','CV-EN']
 
 emailfrom = "tomas@criptos.com"
 #emailto = 'tomas@criptos.com'
-emailto = 'wiacek@textkernel.nl'
+emailto = 'wiacek@wiacek.nl'
 smtpserver = 'localhost'
 
-msgdown = MIMEText("Dear user\n\nUnfortunately, we've been experiencing some trouble in our systems, and the extracion service will be temporarily unavailable.\n\nWe are actively working on the recovery, and we will notify you as soon as it's fixed.\n\nSorry about the inconvenience.\nHave a nice day!\n\nTextkernel operations team")
-msgdown['Subject'] = 'Textkernel extraction service down'
+msgdown = MIMEText("Dear user\n\nUnfortunately, we've been experiencing some trouble in our systems, and the extracion service will be temporarily unavailable.\n\nWe are actively working on the recovery, and we will notify you as soon as it's fixed.\n\nSorry about the inconvenience.\nHave a nice day!\n\wiacek operations team")
+msgdown['Subject'] = 'wiacek extraction service down'
 msgdown['From'] = 'tomas@criptos.com'
 msgdown['To'] = 'tomas@criptos.com'
 
-msgup = MIMEText("Dear user\n\nAfter some work, our services are up and running again. If you still find any issue in your normal operation, don't hesitate to contact us.\n\nSorry about the inconvenience.\nHave a nice day!\n\nTextkernel operations team")
-msgup['Subject'] = 'Textkernel extraction service up'
+msgup = MIMEText("Dear user\n\nAfter some work, our services are up and running again. If you still find any issue in your normal operation, don't hesitate to contact us.\n\nSorry about the inconvenience.\nHave a nice day!\n\wiacek operations team")
+msgup['Subject'] = 'wiacek extraction service up'
 msgup['From'] = 'tomas@criptos.com'
 msgup['To'] = 'tomas@criptos.com'
 
@@ -2203,7 +2188,7 @@ import suds
 
 url = "http://%s/%s/" % (host,app)
 wsdl = "http://%s/%s/soap/search?wsdl" % (host,app)
-namespace = "http://home.textkernel.nl/search"    
+namespace = "http://home.wiacek.nl/search"    
 
 #check the URL is reachable
 get_url_code = urllib.urlopen(url).code
@@ -2533,13 +2518,13 @@ class ErrorParser(HTMLParser):
         data_stripped = data.strip()
         if debug:
             print data_stripped
-        if data_stripped == 'Sourcebox 401' or \
-                data_stripped == 'Sourcebox 500':
+        if data_stripped == 'wiacek 401' or \
+                data_stripped == 'wiacek 500':
             self.data.append(data_stripped)
         if data_stripped == 'STATUS OK':
             self.data.append(data_stripped)
-        if data_stripped == 'Sourcebox Process CV' or \
-                data_stripped == 'Sourcebox':
+        if data_stripped == 'wiacek Process CV' or \
+                data_stripped == 'wiacek':
             self.data.append(data_stripped)
         if self.recording and data_stripped:
             self.data.append(data_stripped)
@@ -2705,7 +2690,7 @@ commands.getstatusoutput('ls /bin/ls')
 commands.getoutput('ls /bin/ls')
 
 def process(file_path, tmf_path):
-        command = 'java -jar /projects/Batches/atomicclientwithvalidation.jar http://beta.textkernel.nl/ match match manager T3xtk3rn3l ' + file_path + " " + tmf_path + " false wiacek false"
+        command = 'java -jar /projects/myjar.jar param1 param2 param3 ' + file_path + " " + tmf_path + " false wiacek false"
         trxml_output = commands.getstatusoutput(command)
         #output is an array, lets get the string part
         trxml_multistring = trxml_output[1]
@@ -3173,8 +3158,8 @@ datadir = /var/lib/collectd/rrd
 debug = true
 [host_excludes]
 hosts =
-	monitor.textkernel.local
-	kadaster.textkernel.local
+	monitor.wiacek.local
+	kadaster.wiacek.local
 
 #parser
 from ConfigParser import ConfigParser
@@ -3449,8 +3434,8 @@ ls -ld [[:upper:]]*
 
 CHECK_USER=`id $USER_NAME 2> /dev/null`
 if [ -n "${CHECK_USER}" ]; then
-STATUS_OUTPUT=`/etc/init.d/rc.textkernel status $SERVICE 2>&1`
-FINAL_OUTPUT=`echo "$STATUS_OUTPUT" | awk 'BEGIN{count=0;ts=-1; problems=""}{ if($0 ~ /No such file/){problems=problems",rc.textkernel cannot start"};if(ts!=-1 && $0 !~ /component/ && ($2!="yes" || $5!="yes")){problems=problems","$7"-not running\n"};if ($0 ~ /OK: 0 components running/){problems=problems",service-not-running"};if ($0 ~ /PID +ACTIVE +HOST/) {ts=count}; count++ } END {print problems}'`
+STATUS_OUTPUT=`/etc/init.d/rc.wiacek status $SERVICE 2>&1`
+FINAL_OUTPUT=`echo "$STATUS_OUTPUT" | awk 'BEGIN{count=0;ts=-1; problems=""}{ if($0 ~ /No such file/){problems=problems",rc.wiacek cannot start"};if(ts!=-1 && $0 !~ /component/ && ($2!="yes" || $5!="yes")){problems=problems","$7"-not running\n"};if ($0 ~ /OK: 0 components running/){problems=problems",service-not-running"};if ($0 ~ /PID +ACTIVE +HOST/) {ts=count}; count++ } END {print problems}'`
 TOTAL_PROBLEMS=`expr $TOTAL_PROBLEMS + 1` 
 DATE_FOR_BACKUP=`date +20%y-%m-%d`
 pass=$(perl -e 'print crypt($ARGV[0], "password")' $PASSWORD)
@@ -3671,7 +3656,7 @@ exit $RETVAL
 ~~~~~~~~~~~~~~~
 
 #Send email
-echo -e $ERROR | /bin/mail -s "$MESSAGE" "wiacek@textkernel.nl"
+echo -e $ERROR | /bin/mail -s "$MESSAGE" "wiacek@wiacek.nl"
 
 #
 SCRIPTDIR="$(cd $(dirname "$0");pwd)"
